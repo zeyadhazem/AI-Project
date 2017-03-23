@@ -35,23 +35,10 @@ public class StudentPlayer extends BohnenspielPlayer {
         // Use code stored in ``mytools`` package.
         MyTools.getSomething();
 
-        // Get the legal moves for the current board state.
-        ArrayList<BohnenspielMove> moves = board_state.getLegalMoves();
-        //BohnenspielMove move = moves.get(0);
-         
-        int score;
-        int bestscore=-1;
-        //BohnenspielMove bestMove=moves.get(0);
         
         // We can see the effects of a move like this...
-        
-        
-        //BohnenspielBoardState cloned_board_state = (BohnenspielBoardState) board_state.clone();
-        Tuple<Integer, BohnenspielMove> miniMax = minimax(9, board_state,0);
+        Tuple<Integer, BohnenspielMove> miniMax = minimax(3, board_state,0);
         BohnenspielMove move1 = miniMax.getMove();
-	    //cloned_board_state.move(move1);
-	        
-	    //System.out.println("PLayer ID -> " + cloned_board_state.getTurnPlayer());
 	    
 
         // But since this is a placeholder algorithm, we won't act on that information.
@@ -76,7 +63,6 @@ public class StudentPlayer extends BohnenspielPlayer {
 	      // Gameover or depth reached, evaluate score
 	      // bestScore = evaluate();
 		   bestScore = board_state.getScore(player_id) - board_state.getScore(opponent_id);
-//		   System.out.println("	" + board_state.getScore(player_id) + "	" + board_state.getScore(opponent_id));
 	   } else {
 		   for (int i=0; i<nextMoves.size(); i++) {
 	         // Try this move for the current "player"
@@ -91,21 +77,14 @@ public class StudentPlayer extends BohnenspielPlayer {
 	         if (board_state.getTurnPlayer() == player_id) {  // mySeed (computer) is maximizing player
 	            currentScore = minimax(depth - 1, cloned_board_state, numberOfTabs+1).getBestScore();
 	            if (currentScore > bestScore) {
-//	            	System.out.println("============================================================");
-//	            	System.out.println("1. current score is " + currentScore);
-//	            	System.out.println("1. Best score is " + bestScore);
 	               bestScore = currentScore;
 	               bestMove = move1;
-	               //System.out.println("My best move is -> " + bestMove.toPrettyString());
 	            }
 	         } else {  // oppSeed is minimizing player
 	            currentScore = minimax(depth - 1, cloned_board_state, numberOfTabs+1).getBestScore();
-//	            System.out.println("A7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 	            if (currentScore < bestScore) {
-	            	//System.out.println("2. current score is " + currentScore);
 	               bestScore = currentScore;
 	               bestMove = move1;
-	               //System.out.println("Best move regarding oponent is -> " + bestMove.toPrettyString());
 	            }
 	         }
 	      }
