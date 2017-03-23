@@ -1,0 +1,13 @@
+# Server version 0.08 running on 192.168.2.10:8123
+# Game ID: 10
+# Board class: bohnenspiel.BohnenspielBoard
+# Timeout: 300000
+# First Move Timeout: 30000
+# Date: Tue Mar 21 23:37:33 EDT 2017
+# Player 1: Player-0, 'GreedyPlayer', running on 192.168.2.10
+# Player 2: Player-1, '260556530', running on 192.168.2.10
+START Player-0 GreedyPlayer
+START Player-1 260556530
+PIT 0 0
+PIT 1 1
+PIT 0 5

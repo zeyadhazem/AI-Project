@@ -1,0 +1,13 @@
+# Server version 0.08 running on 192.168.2.10:8123
+# Game ID: 76
+# Board class: bohnenspiel.BohnenspielBoard
+# Timeout: 300000
+# First Move Timeout: 30000
+# Date: Wed Mar 22 21:55:21 EDT 2017
+# Player 1: Player-0, 'RandomPlayer', running on 192.168.2.10
+# Player 2: Player-1, 'Human', running on 192.168.2.10
+START Player-0 RandomPlayer
+START Player-1 Human
+PIT 0 2
+GAMEOVER USER CANCEL UNDECIDED
+# Game ended: Wed Mar 22 22:03:21 EDT 2017
