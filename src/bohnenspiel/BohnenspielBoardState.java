@@ -67,7 +67,8 @@ public class BohnenspielBoardState extends BoardState{
     // ID of the player that plays first.
     private int first_player;
     
-    private int [] skipCredit={3,3};
+    private int [] skipCredit={2,2};
+    private int [] turnsToSkip={0,0};
 
     public int getCredit(int player)
     {
@@ -93,7 +94,7 @@ public class BohnenspielBoardState extends BoardState{
     
 
     
-    public BohnenspielBoardState(int[][] board, int turn_number, int winner, int turn_player, int first_player, int[] score, int[] skipCredit){
+    public BohnenspielBoardState(int[][] board, int turn_number, int winner, int turn_player, int first_player, int[] score, int[] skipCredit, int[] turnsToSkip){
         super();
 
         this.board[0] = Arrays.copyOf(board[0], 2 * BOARD_WIDTH);
@@ -105,6 +106,7 @@ public class BohnenspielBoardState extends BoardState{
         this.first_player = first_player;
         this.score = score.clone();
         this.skipCredit=skipCredit.clone();
+        this.turnsToSkip=turnsToSkip.clone();
     }
 
     public BohnenspielBoardState() {
@@ -119,8 +121,10 @@ public class BohnenspielBoardState extends BoardState{
         first_player = 0;
         score[0]=0;
         score[1]=0;
-        skipCredit[0]=3;
-        skipCredit[0]=3;
+        skipCredit[0]=2;
+        skipCredit[1]=2;
+        turnsToSkip[0]=0;
+        turnsToSkip[1]=0;
     }
 
     private void placeInitialSeeds(){
@@ -196,7 +200,7 @@ public class BohnenspielBoardState extends BoardState{
 
         }
         
-        if(getCredit(turn_player)>0)
+        if(getCredit(turn_player)>0 && turnsToSkip[turn_player]==0)
         {
 	        BohnenspielMove move = new BohnenspielMove("skip", turn_player);
 	        if(isLegal(move)){
@@ -216,10 +220,10 @@ public class BohnenspielBoardState extends BoardState{
         
     	if (m.move_type == MoveType.PIT)
     	{
-    		return  (m.player_id == turn_player && board[turn_player][m.getPit()] > 0);
+    		return  (m.player_id == turn_player && board[turn_player][m.getPit()] > 0 );
     	}
     		
-    	else if (m.player_id == turn_player && m.move_type == MoveType.SKIP && getCredit(turn_player)>0)
+    	else if (m.player_id == turn_player && m.move_type == MoveType.SKIP && getCredit(turn_player)>0  && turnsToSkip[turn_player]==0)
     	{
     	    return true;
     	}
@@ -251,9 +255,11 @@ public class BohnenspielBoardState extends BoardState{
         if(hus_move.getMoveType()==MoveType.SKIP)
     	{   	
     		updateCredit(turn_player);
+	        turnsToSkip[(turn_player + 1) % 2]=1;
     	}
         else
         {
+	        
 	        int start_pit = hus_move.getPit();
 	        int end_pit = runMove(start_pit);
 	
@@ -261,6 +267,8 @@ public class BohnenspielBoardState extends BoardState{
 	        if(end_pit == -1){
 	            return false;
 	        }
+	        turnsToSkip[turn_player]=0;
+
         }
         if(turn_player == 1){
             turn_number++;
@@ -443,7 +451,7 @@ public class BohnenspielBoardState extends BoardState{
 
     @Override
     public Object clone() {
-        return new BohnenspielBoardState(board, turn_number, winner, turn_player, first_player, score, skipCredit);
+        return new BohnenspielBoardState(board, turn_number, winner, turn_player, first_player, score, skipCredit, turnsToSkip);
     }
 
     /** Used by the server to force a winner in the event of an error. */

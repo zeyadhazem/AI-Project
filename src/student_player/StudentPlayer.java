@@ -37,7 +37,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 
         
         // We can see the effects of a move like this...
-        Tuple<Integer, BohnenspielMove> miniMax = minimax(3, board_state,0);
+        Tuple<Integer, BohnenspielMove> miniMax = minimax(9, board_state,0);
         BohnenspielMove move1 = miniMax.getMove();
 	    
 
