@@ -37,7 +37,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 
         
         // We can see the effects of a move like this...
-        Tuple<Integer, BohnenspielMove> miniMax = minimax(9, board_state,0);
+        Tuple<Integer, BohnenspielMove> miniMax = minimax(9, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
         BohnenspielMove move1 = miniMax.getMove();
 	    
 
@@ -48,20 +48,18 @@ public class StudentPlayer extends BohnenspielPlayer {
     
 	 /** Recursive minimax at level of depth for either maximizing or minimizing player.
 	  	 Return int[3] of {score, row, col}  */
-	private Tuple<Integer,BohnenspielMove> minimax(int depth, BohnenspielBoardState board_state, int numberOfTabs) {
+	private Tuple<Integer,BohnenspielMove> minimax(int depth, BohnenspielBoardState board_state, int numberOfTabs, int alpha, int beta) {
 	   // Generate possible next moves in a List of int[2] of {row, col}.
 		ArrayList<BohnenspielMove> nextMoves = board_state.getLegalMoves();
 	
 	   // mySeed is maximizing; while oppSeed is minimizing
 	   int bestScore = (board_state.getTurnPlayer() == player_id) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-	   //System.out.println("PLayer ID -> " + board_state.getTurnPlayer());
 	   int currentScore;
 	   BohnenspielMove bestMove = new BohnenspielMove();
 	   
 	   
 	   if (nextMoves.isEmpty() || depth == 0) {
 	      // Gameover or depth reached, evaluate score
-	      // bestScore = evaluate();
 		   bestScore = board_state.getScore(player_id) - board_state.getScore(opponent_id);
 	   } else {
 		   for (int i=0; i<nextMoves.size(); i++) {
@@ -69,22 +67,38 @@ public class StudentPlayer extends BohnenspielPlayer {
 			 BohnenspielBoardState cloned_board_state = (BohnenspielBoardState) board_state.clone();
 		     BohnenspielMove move1 = nextMoves.get(i);
 		     cloned_board_state.move(move1);
+		     
 //		     for (int j=0; j<numberOfTabs; j++){
 //		    	 System.out.print(">");
 //		     }
 //		     System.out.print("With Move " + move1.toPrettyString());
 		     
 	         if (board_state.getTurnPlayer() == player_id) {  // mySeed (computer) is maximizing player
-	            currentScore = minimax(depth - 1, cloned_board_state, numberOfTabs+1).getBestScore();
+	            currentScore = minimax(depth - 1, cloned_board_state, numberOfTabs+1, alpha, beta).getBestScore();
 	            if (currentScore > bestScore) {
 	               bestScore = currentScore;
 	               bestMove = move1;
 	            }
+	            if(currentScore > alpha){
+	            	alpha = currentScore;
+	            	bestMove = move1;
+	            }
+	            if (beta <= alpha){
+	            	return new Tuple<Integer, BohnenspielMove> (beta, new BohnenspielMove());	//Pruning
+	            }
+	            
 	         } else {  // oppSeed is minimizing player
-	            currentScore = minimax(depth - 1, cloned_board_state, numberOfTabs+1).getBestScore();
+	            currentScore = minimax(depth - 1, cloned_board_state, numberOfTabs+1, alpha, beta).getBestScore();
 	            if (currentScore < bestScore) {
 	               bestScore = currentScore;
 	               bestMove = move1;
+	            }
+	            if(currentScore < beta){
+	            	beta = currentScore;
+	            	bestMove = move1;
+	            }
+	            if (beta <= alpha){
+	            	return new Tuple<Integer, BohnenspielMove> (alpha, new BohnenspielMove());	//Pruning
 	            }
 	         }
 	      }

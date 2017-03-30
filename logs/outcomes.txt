@@ -32,3 +32,11 @@
 34,xxxxxxxxx,xxxxxxxxx,1,xxxxxxxxx,13,game00034.log,
 39,xxxxxxxxx,xxxxxxxxx,1,xxxxxxxxx,20,game00039.log,
 41,xxxxxxxxx,GreedyPlayer,0,xxxxxxxxx,18,game00041.log,
+42,xxxxxxxxx,xxxxxxxxx,0,xxxxxxxxx,22,game00042.log,
+43,260556530,260556530,0,260556530,25,game00043.log,
+44,GreedyPlayer,260556530,1,260556530,13,game00044.log,
+45,260556530,260556530,GAMEOVER USER CANCEL UNDECIDED,NOBODY,0,game00045.log,USER CANCEL
+46,260556530,260556530,1,260556530,0,game00046.log,TIMEOUT
+47,260556530,260556530,0,260556530,25,game00047.log,
+48,260556530,260556530,0,260556530,25,game00048.log,
+49,GreedyPlayer,260556530,1,260556530,13,game00049.log,
