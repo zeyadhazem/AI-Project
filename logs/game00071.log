@@ -1,0 +1,10 @@
+# Server version 0.08 running on 142.157.42.13:8123
+# Game ID: 71
+# Board class: bohnenspiel.BohnenspielBoard
+# Timeout: 300000
+# First Move Timeout: 30000
+# Date: Thu Mar 30 10:08:22 EDT 2017
+# Player 1: Player-0, '260556530', running on 142.157.42.13
+# Player 2: Player-1, '260556530', running on 142.157.42.13
+START Player-0 260556530
+START Player-1 260556530

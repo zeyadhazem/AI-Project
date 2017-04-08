@@ -1,6 +1,9 @@
 package bohnenspiel;
 
+//import student_player.StudentPlayer.heuristics;
+//import student_player.StudentPlayer.heuristics;
 import student_player.mytools.MyTools;
+import student_player.mytools.Tuple;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,6 +14,14 @@ import bohnenspiel.BohnenspielPlayer;
 
 /** A random Bohnenspiel player. */
 public class GreedyBohnenspielPlayer extends BohnenspielPlayer {
+	
+	enum heuristics {
+		scoreDifference,
+		marginForWinning,
+		marginForLosing,
+		seedsDifference;
+	}
+	
     Random rand = new Random();
 
     public GreedyBohnenspielPlayer() { super("GreedyPlayer"); }
@@ -19,31 +30,124 @@ public class GreedyBohnenspielPlayer extends BohnenspielPlayer {
     public BohnenspielMove chooseMove(BohnenspielBoardState board_state)
     {
 
+    	// Get the contents of the pits so we can use it to make decisions.
+        int[][] pits = board_state.getPits();
+
+        // Use ``player_id`` and ``opponent_id`` to get my pits and opponent pits.
+        int[] my_pits = pits[player_id];
+        int[] op_pits = pits[opponent_id];
+
         // Use code stored in ``mytools`` package.
         MyTools.getSomething();
-
-        // Get the legal moves for the current board state.
-        ArrayList<BohnenspielMove> moves = board_state.getLegalMoves();
-
-        int score;
-        int bestscore=-1;
-        BohnenspielMove bestMove=moves.get(0);
+		
         // We can see the effects of a move like this...
-        
-        for (int i=0; i<moves.size(); i++)
-        {
-	        BohnenspielBoardState cloned_board_state = (BohnenspielBoardState) board_state.clone();
-	        BohnenspielMove move1 = moves.get(i);
-	        cloned_board_state.move(move1);
-	        score=cloned_board_state.getScore(player_id);
-	        if (score>bestscore)
-	        {
-		        bestMove=move1;
-		        bestscore=score;
-	        }
-        }
-        
+        Tuple<Integer, BohnenspielMove> miniMax = minimax(10, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        BohnenspielMove move1 = miniMax.getMove();
+	    
+
         // But since this is a placeholder algorithm, we won't act on that information.
-        return bestMove;
+        return move1;
     }
+    
+    /** Recursive minimax at level of depth for either maximizing or minimizing player.
+ 	 Return int[3] of {score, row, col}  */
+	private Tuple<Integer,BohnenspielMove> minimax(int depth, BohnenspielBoardState board_state, int numberOfTabs, int alpha, int beta) {
+	  // Generate possible next moves in a List of int[2] of {row, col}.
+		ArrayList<BohnenspielMove> nextMoves = board_state.getLegalMoves();
+	
+	  // mySeed is maximizing; while oppSeed is minimizing
+	  int bestScore = (board_state.getTurnPlayer() == player_id) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+	  int currentScore;
+	  BohnenspielMove bestMove = new BohnenspielMove();
+	  
+	  
+	  if (nextMoves.isEmpty() || depth == 0) {
+	      // Gameover or depth reached, evaluate score
+		   ArrayList <heuristics> heuristicsList = new ArrayList <heuristics>();
+		   heuristicsList.add(heuristics.scoreDifference);
+		   //heuristicsList.add(heuristics.seedsDifference);
+		   //heuristicsList.add(heuristics.marginForWinning);	
+		   //heuristicsList.add(heuristics.marginForLosing);
+		   
+		   bestScore = evaluate(board_state, heuristicsList);
+	  } else {
+		   for (int i=0; i<nextMoves.size(); i++) {
+	        // Try this move for the current "player"
+			 BohnenspielBoardState cloned_board_state = (BohnenspielBoardState) board_state.clone();
+		     BohnenspielMove move1 = nextMoves.get(i);
+		     cloned_board_state.move(move1);
+		     
+		     
+	        if (board_state.getTurnPlayer() == player_id) {  // mySeed (computer) is maximizing player
+	           currentScore = minimax(depth - 1, cloned_board_state, numberOfTabs+1, alpha, beta).getBestScore();
+	           if (currentScore > bestScore) {
+	              bestScore = currentScore;
+	              bestMove = move1;
+	           }
+	           if(currentScore > alpha){
+	           	alpha = currentScore;
+	           	bestMove = move1;
+	           }
+	           if (beta <= alpha){
+	           	return new Tuple<Integer, BohnenspielMove> (beta, new BohnenspielMove());	//Pruning
+	           }
+	           
+	        } else {  // oppSeed is minimizing player
+	           currentScore = minimax(depth - 1, cloned_board_state, numberOfTabs+1, alpha, beta).getBestScore();
+	           if (currentScore < bestScore) {
+	              bestScore = currentScore;
+	              bestMove = move1;
+	           }
+	           if(currentScore < beta){
+	           	beta = currentScore;
+	           	bestMove = move1;
+	           }
+	           if (beta <= alpha){
+	           	return new Tuple<Integer, BohnenspielMove> (alpha, new BohnenspielMove());	//Pruning
+	           }
+	        }
+	     }
+	  }
+	  
+	  //System.out.println("BEST MOVE IS " + bestMove.toPrettyString());
+	  return new Tuple<Integer, BohnenspielMove> (bestScore, bestMove);
+	}
+	
+	private void printList (ArrayList<BohnenspielMove> list){
+		for (int i=0; i<list.size(); i++){
+			System.out.println(list.get(i).toPrettyString());
+		}
+	}
+	
+	private int evaluate (BohnenspielBoardState board_state, ArrayList<heuristics> heuristicsList){
+		int score = 0;
+		
+		for (heuristics heuristic : heuristicsList){
+			if (heuristic.equals(heuristics.scoreDifference)){
+				score += board_state.getScore(player_id) - board_state.getScore(opponent_id);
+			}
+			else if (heuristic.equals(heuristics.seedsDifference)){	
+				int opponentSeeds = 0, mySeeds = 0;
+		        int[][] pits2 = board_state.getPits();
+		        for (int i=0; i<pits2.length; i++){
+		        	for (int j=0; j<pits2[0].length; j++){
+		        		if (i == 0){ //Opponent Seeds
+		        			opponentSeeds += pits2[i][j];
+		        		}
+		        		else{ //My seeds
+		        			mySeeds += pits2[i][j];
+		        		}
+		        	}
+		        }
+		        score += (mySeeds - opponentSeeds);
+			}
+			else if (heuristic.equals(heuristics.marginForWinning)){
+				score += -(36 - board_state.getScore(player_id));
+			}
+			else if (heuristic.equals(heuristics.marginForLosing)){
+				score += (36 - board_state.getScore(player_id));
+			}
+		}
+		return score;
+	}
 }

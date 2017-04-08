@@ -1,0 +1,50 @@
+# Server version 0.08 running on 10.96.48.182:8123
+# Game ID: 99
+# Board class: bohnenspiel.BohnenspielBoard
+# Timeout: 300000
+# First Move Timeout: 30000
+# Date: Fri Apr 07 19:26:18 EDT 2017
+# Player 1: Player-0, '260556530', running on 10.96.48.182
+# Player 2: Player-1, '260556530', running on 10.96.48.182
+START Player-0 260556530
+START Player-1 260556530
+PIT 0 1
+PIT 1 1
+PIT 0 0
+PIT 1 0
+PIT 0 5
+PIT 1 4
+PIT 0 4
+PIT 1 3
+PIT 0 3
+PIT 1 3
+PIT 1 1
+PIT 0 4
+PIT 0 2
+PIT 1 2
+PIT 0 0
+PIT 1 1
+PIT 0 3
+PIT 1 0
+PIT 0 5
+PIT 1 3
+PIT 0 0
+PIT 1 2
+PIT 0 2
+PIT 1 0
+PIT 1 1
+PIT 0 4
+PIT 1 1
+PIT 0 1
+PIT 1 2
+PIT 0 3
+PIT 1 3
+PIT 0 2
+PIT 0 4
+PIT 1 0
+PIT 0 3
+PIT 1 1
+PIT 0 4
+PIT 1 2
+GAMEOVER WINNER 1         Player-0 score: 26  Player-1 score: 46
+# Game ended: Fri Apr 07 19:26:19 EDT 2017
