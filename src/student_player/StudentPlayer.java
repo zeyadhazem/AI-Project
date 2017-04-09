@@ -47,10 +47,10 @@ public class StudentPlayer extends BohnenspielPlayer {
         // We can see the effects of a move like this...
         if ((board_state.firstPlayer() == player_id) && (board_state.getTurnNumber() == 0)){
         	ArrayList<BohnenspielMove> nextMoves = board_state.getLegalMoves();
-        	return nextMoves.get(3);
+        	return nextMoves.get(6); //Skip
         }
         
-        Tuple<Integer, BohnenspielMove> miniMax = minimax(15, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        Tuple<Integer, BohnenspielMove> miniMax = minimax(12, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
         BohnenspielMove move1 = miniMax.getMove();     
         
         // But since this is a placeholder algorithm, we won't act on that information.
@@ -141,7 +141,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 		        int[][] pits2 = board_state.getPits();
 		        for (int i=0; i<pits2.length; i++){
 		        	for (int j=0; j<pits2[0].length; j++){
-		        		if (i == 0){ //Opponent Seeds
+		        		if (i == opponent_id){ //Opponent Seeds
 		        			opponentSeeds += pits2[i][j];
 		        		}
 		        		else{ //My seeds
@@ -160,8 +160,8 @@ public class StudentPlayer extends BohnenspielPlayer {
 			else if (heuristic.equals(heuristics.opponentSeedsOverflow)){
 				int opponentSeedsOverflow = 0;
 		        int[][] pits2 = board_state.getPits();
-		        for (int j=0; j<pits2[0].length; j++){
-		        	int extraSeeds = pits2[0][j] - (6-j) + 1; //17 - 11
+		        for (int j=0; j<pits2[opponent_id].length; j++){
+		        	int extraSeeds = pits2[opponent_id][j] - (6-j) + 1; //17 - 11
 		        	if (extraSeeds > 0){
 		        		double lapsOfSeeds = (double)extraSeeds/6;	//2.8333 - 1.83333
 		        		//One lap for me, one for the opponent

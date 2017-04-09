@@ -2,6 +2,7 @@ package bohnenspiel;
 
 //import student_player.StudentPlayer.heuristics;
 //import student_player.StudentPlayer.heuristics;
+//import student_player.StudentPlayer.heuristics;
 import student_player.mytools.MyTools;
 import student_player.mytools.Tuple;
 
@@ -41,7 +42,7 @@ public class GreedyBohnenspielPlayer extends BohnenspielPlayer {
         MyTools.getSomething();
 		
         // We can see the effects of a move like this...
-        Tuple<Integer, BohnenspielMove> miniMax = minimax(1, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        Tuple<Integer, BohnenspielMove> miniMax = minimax(11, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
         BohnenspielMove move1 = miniMax.getMove();
 	    
 
@@ -120,18 +121,18 @@ public class GreedyBohnenspielPlayer extends BohnenspielPlayer {
 	}
 	
 	private int evaluate (BohnenspielBoardState board_state, ArrayList<heuristics> heuristicsList){
-		int score = 0;
+int score = 0;
 		
 		for (heuristics heuristic : heuristicsList){
 			if (heuristic.equals(heuristics.scoreDifference)){
-				score += board_state.getScore(player_id) - board_state.getScore(opponent_id);
+				score += 10*(board_state.getScore(player_id) - board_state.getScore(opponent_id));
 			}
 			else if (heuristic.equals(heuristics.seedsDifference)){	
 				int opponentSeeds = 0, mySeeds = 0;
 		        int[][] pits2 = board_state.getPits();
 		        for (int i=0; i<pits2.length; i++){
 		        	for (int j=0; j<pits2[0].length; j++){
-		        		if (i == 0){ //Opponent Seeds
+		        		if (i == opponent_id){ //Opponent Seeds
 		        			opponentSeeds += pits2[i][j];
 		        		}
 		        		else{ //My seeds
@@ -145,8 +146,37 @@ public class GreedyBohnenspielPlayer extends BohnenspielPlayer {
 				score += -(36 - board_state.getScore(player_id));
 			}
 			else if (heuristic.equals(heuristics.marginForLosing)){
-				score += (36 - board_state.getScore(player_id));
+				score += 36 - board_state.getScore(opponent_id);
 			}
+//			else if (heuristic.equals(heuristics.opponentSeedsOverflow)){
+//				int opponentSeedsOverflow = 0;
+//		        int[][] pits2 = board_state.getPits();
+//		        for (int j=0; j<pits2[opponent_id].length; j++){
+//		        	int extraSeeds = pits2[opponent_id][j] - (6-j) + 1; //17 - 11
+//		        	if (extraSeeds > 0){
+//		        		double lapsOfSeeds = (double)extraSeeds/6;	//2.8333 - 1.83333
+//		        		//One lap for me, one for the opponent
+//		        		int floorLapsOfSeeds = (int) lapsOfSeeds; //2 - 1 - 3
+//		        		
+//		        		if (floorLapsOfSeeds%2 == 0){ //any extra goes to me
+//		        			int seedMe = 0;
+//		        			seedMe += (int) (6 * (double)(lapsOfSeeds - (double)floorLapsOfSeeds)); //0.83333
+//		        			seedMe += (int) (6 * (floorLapsOfSeeds/2)); //6
+//		        			opponentSeedsOverflow += seedMe;
+//		        		}
+//		        		else {
+//		        			int seedMe = 0;
+//		        			seedMe += 6 * ((floorLapsOfSeeds/2) + 1);
+//		        			opponentSeedsOverflow += seedMe;
+//		        		}
+//		        	}
+//		        }
+//		        score -= opponentSeedsOverflow;
+//			}
+//			else if (heuristic.equals(heuristics.opponentSeedsOverflow)){
+//				score += 36 - board_state.getScore(opponent_id);
+//			}
+			
 		}
 		return score;
 	}
