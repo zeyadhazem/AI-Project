@@ -17,7 +17,6 @@ public class StudentPlayer extends BohnenspielPlayer {
 		scoreDifference,
 		marginForWinning,
 		marginForLosing,
-		mySeedsOverflow,
 		opponentSeedsOverflow,
 		seedsDifference;
 	}
@@ -40,36 +39,28 @@ public class StudentPlayer extends BohnenspielPlayer {
         // Use ``player_id`` and ``opponent_id`` to get my pits and opponent pits.
         int[] my_pits = pits[player_id];
         int[] op_pits = pits[opponent_id];
-
-        // Use code stored in ``mytools`` package.
-        MyTools.getSomething();
-		
-        // We can see the effects of a move like this...
-//        if ((board_state.firstPlayer() == player_id) && (board_state.getTurnNumber() == 0)){
-//        	ArrayList<BohnenspielMove> nextMoves = board_state.getLegalMoves();
-//        	return nextMoves.get(6); //Skip
-//        }
         
+        //Apply min-max
         Tuple<Integer, BohnenspielMove> miniMax = minimax(11, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
         BohnenspielMove move1 = miniMax.getMove();
         
+        // Make sure move is not illegal
         if (move1.getMoveType().equals(BohnenspielMove.MoveType.NOTHING)){
         	System.out.println("Output is an Illegal move");
         	move1 = board_state.getLegalMoves().get(0);
         }
         
-        // But since this is a placeholder algorithm, we won't act on that information.
+        //Applu move
         return move1;
     } 
     
     
-	 /** Recursive minimax at level of depth for either maximizing or minimizing player.
-	  	 Return int[3] of {score, row, col}  */
+	 /** Recursive minimax at level of depth for either maximizing or minimizing player. */
 	private Tuple<Integer,BohnenspielMove> minimax(int depth, BohnenspielBoardState board_state, int numberOfTabs, int alpha, int beta) {
-	   // Generate possible next moves in a List of int[2] of {row, col}.
+	   // Generate possible next moves
 		ArrayList<BohnenspielMove> nextMoves = board_state.getLegalMoves();
 	
-	   // mySeed is maximizing; while oppSeed is minimizing
+	   // My turn is maximizing but opponent's turn is minimizing
 	   int bestScore = (board_state.getTurnPlayer() == player_id) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 	   int currentScore;
 	   BohnenspielMove bestMove = new BohnenspielMove();
@@ -80,20 +71,18 @@ public class StudentPlayer extends BohnenspielPlayer {
 		   ArrayList <heuristics> heuristicsList = new ArrayList <heuristics>();
 		   heuristicsList.add(heuristics.scoreDifference);
 		   heuristicsList.add(heuristics.seedsDifference);
-		   //heuristicsList.add(heuristics.marginForWinning);
-		   //heuristicsList.add(heuristics.marginForLosing);
 		   heuristicsList.add(heuristics.opponentSeedsOverflow);
-		   
 		   bestScore = evaluate(board_state, heuristicsList);
-	   } else {
+	   } 
+	   else {
+		   //For every legal move for the player
 		   for (int i=0; i<nextMoves.size(); i++) {
 	         // Try this move for the current "player"
 			 BohnenspielBoardState cloned_board_state = (BohnenspielBoardState) board_state.clone();
 		     BohnenspielMove move1 = nextMoves.get(i);
 		     cloned_board_state.move(move1);
 		     
-		     
-	         if (board_state.getTurnPlayer() == player_id) {  // mySeed (computer) is maximizing player
+	         if (board_state.getTurnPlayer() == player_id) {  // my Turn is maximizing
 	            currentScore = minimax(depth - 1, cloned_board_state, numberOfTabs+1, alpha, beta).getBestScore();
 	            if (currentScore > bestScore) {
 	               bestScore = currentScore;
@@ -107,7 +96,8 @@ public class StudentPlayer extends BohnenspielPlayer {
 	            	return new Tuple<Integer, BohnenspielMove> (beta, new BohnenspielMove());	//Pruning
 	            }
 	            
-	         } else {  // oppSeed is minimizing player
+	         } 
+	         else {  // opponent is minimizing
 	            currentScore = minimax(depth - 1, cloned_board_state, numberOfTabs+1, alpha, beta).getBestScore();
 	            if (currentScore < bestScore) {
 	               bestScore = currentScore;
@@ -124,7 +114,6 @@ public class StudentPlayer extends BohnenspielPlayer {
 	      }
 	   }
 	   
-	   //System.out.println("BEST MOVE IS " + bestMove.toPrettyString());
 	   return new Tuple<Integer, BohnenspielMove> (bestScore, bestMove);
 	}
 	
@@ -137,8 +126,8 @@ public class StudentPlayer extends BohnenspielPlayer {
 	private int evaluate (BohnenspielBoardState board_state, ArrayList<heuristics> heuristicsList){
 		int score = 0;
 		
-		for (heuristics heuristic : heuristicsList){
-			if (heuristic.equals(heuristics.scoreDifference)){
+		for (heuristics heuristic : heuristicsList){	//Check the list of heuristics to evaluate a state
+			if (heuristic.equals(heuristics.scoreDifference)){	// myScore - oppScore
 				score += 10*(board_state.getScore(player_id) - board_state.getScore(opponent_id));
 			}
 			else if (heuristic.equals(heuristics.seedsDifference)){	
@@ -186,11 +175,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 		        	}
 		        }
 		        score -= (int)((opponentSeedsOverflow));
-			}
-//			else if (heuristic.equals(heuristics.opponentSeedsOverflow)){
-//				score += 36 - board_state.getScore(opponent_id);
-//			}
-			
+			}			
 		}
 		return score;
 	}
