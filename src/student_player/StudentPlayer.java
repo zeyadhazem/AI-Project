@@ -45,13 +45,18 @@ public class StudentPlayer extends BohnenspielPlayer {
         MyTools.getSomething();
 		
         // We can see the effects of a move like this...
-        if ((board_state.firstPlayer() == player_id) && (board_state.getTurnNumber() == 0)){
-        	ArrayList<BohnenspielMove> nextMoves = board_state.getLegalMoves();
-        	return nextMoves.get(6); //Skip
-        }
+//        if ((board_state.firstPlayer() == player_id) && (board_state.getTurnNumber() == 0)){
+//        	ArrayList<BohnenspielMove> nextMoves = board_state.getLegalMoves();
+//        	return nextMoves.get(6); //Skip
+//        }
         
-        Tuple<Integer, BohnenspielMove> miniMax = minimax(12, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
-        BohnenspielMove move1 = miniMax.getMove();     
+        Tuple<Integer, BohnenspielMove> miniMax = minimax(11, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        BohnenspielMove move1 = miniMax.getMove();
+        
+        if (move1.getMoveType().equals(BohnenspielMove.MoveType.NOTHING)){
+        	System.out.println("Output is an Illegal move");
+        	move1 = board_state.getLegalMoves().get(0);
+        }
         
         // But since this is a placeholder algorithm, we won't act on that information.
         return move1;
@@ -180,7 +185,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 		        		}
 		        	}
 		        }
-		        score -= opponentSeedsOverflow;
+		        score -= (int)((opponentSeedsOverflow));
 			}
 //			else if (heuristic.equals(heuristics.opponentSeedsOverflow)){
 //				score += 36 - board_state.getScore(opponent_id);

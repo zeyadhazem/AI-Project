@@ -1,4 +1,4 @@
-package bohnenspiel;
+//package bohnenspiel;
 
 import student_player.mytools.MyTools;
 
