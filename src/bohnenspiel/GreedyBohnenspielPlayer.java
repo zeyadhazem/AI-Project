@@ -41,7 +41,7 @@ public class GreedyBohnenspielPlayer extends BohnenspielPlayer {
         MyTools.getSomething();
 		
         // We can see the effects of a move like this...
-        Tuple<Integer, BohnenspielMove> miniMax = minimax(10, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        Tuple<Integer, BohnenspielMove> miniMax = minimax(1, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
         BohnenspielMove move1 = miniMax.getMove();
 	    
 
@@ -49,7 +49,7 @@ public class GreedyBohnenspielPlayer extends BohnenspielPlayer {
         return move1;
     }
     
-    /** Recursive minimax at level of depth for either maximizing or minimizing player.
+    /** Recursive minimax at level of depth for either maximizing or minimizing player.s
  	 Return int[3] of {score, row, col}  */
 	private Tuple<Integer,BohnenspielMove> minimax(int depth, BohnenspielBoardState board_state, int numberOfTabs, int alpha, int beta) {
 	  // Generate possible next moves in a List of int[2] of {row, col}.

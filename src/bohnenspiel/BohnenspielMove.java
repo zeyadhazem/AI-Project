@@ -66,6 +66,7 @@ public class BohnenspielMove extends Move{
         String[] components = str.split(" ");
 
         String type_string = components[0];
+        
         this.player_id = Integer.valueOf(components[1]);
 
         if(type_string.equals("NOTHING")){

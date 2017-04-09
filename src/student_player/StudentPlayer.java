@@ -45,11 +45,13 @@ public class StudentPlayer extends BohnenspielPlayer {
         MyTools.getSomething();
 		
         // We can see the effects of a move like this...
-        Tuple<Integer, BohnenspielMove> miniMax = minimax(10, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        if ((board_state.firstPlayer() == player_id) && (board_state.getTurnNumber() == 0)){
+        	ArrayList<BohnenspielMove> nextMoves = board_state.getLegalMoves();
+        	return nextMoves.get(3);
+        }
+        
+        Tuple<Integer, BohnenspielMove> miniMax = minimax(15, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
         BohnenspielMove move1 = miniMax.getMove();     
-        
-        //System.out.println(miniMax.getBestScore());
-        
         
         // But since this is a placeholder algorithm, we won't act on that information.
         return move1;
@@ -72,7 +74,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 	      // Gameover or depth reached, evaluate score
 		   ArrayList <heuristics> heuristicsList = new ArrayList <heuristics>();
 		   heuristicsList.add(heuristics.scoreDifference);
-		   //heuristicsList.add(heuristics.seedsDifference);
+		   heuristicsList.add(heuristics.seedsDifference);
 		   //heuristicsList.add(heuristics.marginForWinning);
 		   //heuristicsList.add(heuristics.marginForLosing);
 		   heuristicsList.add(heuristics.opponentSeedsOverflow);
@@ -178,7 +180,7 @@ public class StudentPlayer extends BohnenspielPlayer {
 		        		}
 		        	}
 		        }
-		        score -= (opponentSeedsOverflow);
+		        score -= opponentSeedsOverflow;
 			}
 //			else if (heuristic.equals(heuristics.opponentSeedsOverflow)){
 //				score += 36 - board_state.getScore(opponent_id);
