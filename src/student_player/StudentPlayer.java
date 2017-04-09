@@ -41,7 +41,7 @@ public class StudentPlayer extends BohnenspielPlayer {
         int[] op_pits = pits[opponent_id];
         
         //Apply min-max
-        Tuple<Integer, BohnenspielMove> miniMax = minimax(11, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        Tuple<Integer, BohnenspielMove> miniMax = minimax(14, board_state,0, Integer.MIN_VALUE, Integer.MAX_VALUE);
         BohnenspielMove move1 = miniMax.getMove();
         
         // Make sure move is not illegal
